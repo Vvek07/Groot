@@ -16,10 +16,8 @@ const server = http.createServer(app);
 // Socket.io Setup
 const io = socketIO(server, {
   cors: {
-    cors: {
-      origin: process.env.CLIENT_URL || '*', // Allow configured client or all (be careful in prod)
-      credentials: true
-    }
+    origin: process.env.CLIENT_URL || '*', // Allow configured client or all (be careful in prod)
+    credentials: true
   }
 });
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { SocketProvider } from './context/SocketContext';
@@ -10,8 +11,6 @@ const PrivateRoute = ({ children }) => {
   const { user } = useAuth();
   return user ? children : <Navigate to="/login" />;
 };
-
-import axios from 'axios';
 
 // Set Axios Base URL
 axios.defaults.baseURL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
