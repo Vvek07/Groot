@@ -60,7 +60,13 @@ const ChatArea = () => {
   const fetchChatInfo = async () => {
     try {
       const isGroupChat = chatId.startsWith('group-');
-      if (!isGroupChat) {
+      if (isGroupChat) {
+        // Handle Group Chat
+        const groupId = chatId.replace('group-', '');
+        const response = await axios.get(`/api/groups/${groupId}`);
+        setChatInfo({ type: 'group', user: response.data }); // Using 'user' key to keep render logic simple, or we can refactor render
+      } else {
+        // Handle Private Chat
         const [userId1, userId2] = chatId.split('-');
         const currentUserId = user.id || user._id;
         const otherUserId = userId1 === currentUserId ? userId2 : userId1;
@@ -138,14 +144,24 @@ const ChatArea = () => {
     <div className="flex-1 flex flex-col bg-dark-bg">
       <div className="bg-dark-card border-b border-gray-800 p-4 flex items-center justify-between">
         <div className="flex items-center">
+          <button
+            onClick={() => window.history.back()}
+            className="mr-3 md:hidden text-text-secondary hover:text-white"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
           <img
-            src={chatInfo?.user?.image?.url || 'https://via.placeholder.com/40'}
+            src={chatInfo?.type === 'group'
+              ? (chatInfo?.user?.image?.url || 'https://via.placeholder.com/40')
+              : (chatInfo?.user?.image?.url || 'https://via.placeholder.com/40')}
             alt="Chat"
             className="w-12 h-12 rounded-full object-cover"
           />
           <div className="ml-3">
             <h3 className="font-semibold text-text-primary flex items-center">
-              {chatInfo?.user?.username || 'Chat'}
+              {chatInfo?.type === 'group' ? chatInfo?.user?.name : (chatInfo?.user?.username || 'Chat')}
               {isAIBot && (
                 <span className="ml-2 px-2 py-1 bg-gradient-to-r from-highlight to-pink-500 text-white text-xs rounded-full">
                   AI Assistant
@@ -155,7 +171,9 @@ const ChatArea = () => {
             {typingUsers.size > 0 ? (
               <p className="text-xs text-highlight animate-pulse">typing...</p>
             ) : (
-              <p className="text-xs text-text-secondary">{chatInfo?.user?.bio || 'Online'}</p>
+              chatInfo?.type === 'group'
+                ? <p className="text-xs text-text-secondary">{chatInfo?.user?.members?.length || 0} members</p>
+                : <p className="text-xs text-text-secondary">{chatInfo?.user?.bio || 'Online'}</p>
             )}
           </div>
         </div>

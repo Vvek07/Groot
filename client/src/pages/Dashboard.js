@@ -62,11 +62,17 @@ const Dashboard = () => {
 
   return (
     <div className="flex h-screen bg-gray-100 relative">
-      <Sidebar />
+      <div className={`${window.location.pathname !== '/dashboard' && window.location.pathname !== '/dashboard/' ? 'hidden md:block' : 'w-full md:w-80'} md:flex-none border-r border-gray-800`}>
+        <Sidebar />
+      </div>
 
-      <div className="flex-1 flex flex-col h-screen overflow-hidden">
+      <div className={`flex-1 flex flex-col h-screen overflow-hidden ${window.location.pathname === '/dashboard' || window.location.pathname === '/dashboard/' ? 'hidden md:flex' : 'flex'}`}>
         <Routes>
-          <Route path="/" element={<ChatArea selectedChat={selectedChat} />} />
+          <Route path="/" element={
+            <div className="hidden md:flex flex-1 items-center justify-center bg-dark-bg text-text-secondary">
+              Select a chat to start messaging
+            </div>
+          } />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/notifications" element={<NotificationsPage />} />
           <Route path="/profile" element={<ProfilePage />} />
