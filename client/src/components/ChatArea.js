@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import { useSocket } from '../context/SocketContext';
 import { useAuth } from '../context/AuthContext';
@@ -144,14 +144,14 @@ const ChatArea = () => {
     <div className="flex-1 flex flex-col bg-dark-bg">
       <div className="bg-dark-card border-b border-gray-800 p-4 flex items-center justify-between">
         <div className="flex items-center">
-          <button
-            onClick={() => window.history.back()}
+          <Link
+            to="/dashboard"
             className="mr-3 md:hidden text-text-secondary hover:text-white"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
-          </button>
+          </Link>
           <img
             src={chatInfo?.type === 'group'
               ? (chatInfo?.user?.image?.url || 'https://via.placeholder.com/40')

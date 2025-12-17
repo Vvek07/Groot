@@ -6,7 +6,7 @@ import axios from 'axios';
 
 import CreateGroupModal from './CreateGroupModal';
 
-const Sidebar = () => {
+const Sidebar = ({ isCollapsed, toggleSidebar }) => {
   const { user, logout } = useAuth();
   const { onlineUsers } = useSocket();
   const location = useLocation();
@@ -29,7 +29,7 @@ const Sidebar = () => {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <div className="w-80 bg-dark-card border-r border-gray-800 flex flex-col">
+    <div className={`h-full flex flex-col bg-dark-card transition-all duration-300 ${isCollapsed ? 'w-20' : 'w-full md:w-80'}`}>
       <div className="p-4 bg-gradient-to-r from-highlight to-pink-500">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
@@ -37,16 +37,44 @@ const Sidebar = () => {
               <img
                 src={user?.image?.url}
                 alt={user?.username}
-                className="w-12 h-12 rounded-full object-cover border-2 border-white"
+                className="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover border-2 border-white"
               />
               <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></div>
             </div>
-            <div>
-              <h2 className="font-semibold text-white">{user?.username}</h2>
-              <p className="text-xs text-white/80">Online</p>
-            </div>
+            {!isCollapsed && (
+              <div>
+                <h2 className="font-semibold text-white truncate max-w-[120px]">{user?.username}</h2>
+                <p className="text-xs text-white/80">Online</p>
+              </div>
+            )}
           </div>
-          <div className="flex items-center space-x-2">
+
+          <div className="flex items-center space-x-1">
+            {/* Minimize Button (Desktop) / Close Button (Mobile) */}
+            <button
+              onClick={toggleSidebar}
+              className="text-white hover:bg-white/20 p-1 rounded transition md:block hidden"
+              title={isCollapsed ? "Expand" : "Minimize"}
+            >
+              {isCollapsed ? (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 5l7 7-7 7M5 5l7 7-7 7" /></svg>
+              ) : (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 19l-7-7 7-7m8 14l-7-7 7-7" /></svg>
+              )}
+            </button>
+            {/* Mobile Close Button */}
+            <button
+              onClick={toggleSidebar} // On mobile this closes it
+              className="text-white hover:bg-white/20 p-1 rounded transition md:hidden block"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+          </div>
+        </div>
+
+        {/* Buttons Row */}
+        {!isCollapsed && (
+          <div className="flex justify-end mt-2 space-x-2">
             <button
               onClick={() => setShowCreateGroup(true)}
               className="text-white hover:bg-white/20 p-2 rounded-lg transition"
@@ -66,7 +94,7 @@ const Sidebar = () => {
               </svg>
             </button>
           </div>
-        </div>
+        )}
       </div>
 
       <div className="flex border-b border-gray-800 bg-dark-bg">
