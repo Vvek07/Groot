@@ -74,6 +74,11 @@ class MessageService {
                         const botReply = await aiService.getBotResponse(message.content);
                         console.log('🤖 Bot reply generated:', botReply);
 
+                        if (!botReply || botReply.trim() === '') {
+                            console.warn('⚠️ Empty bot reply, skipping save.');
+                            return;
+                        }
+
                         const botMessage = new Message({
                             sender: message.recipient._id, // Bot is sender
                             recipient: message.sender._id, // Original sender is recipient
