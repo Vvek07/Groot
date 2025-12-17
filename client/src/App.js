@@ -11,6 +11,12 @@ const PrivateRoute = ({ children }) => {
   return user ? children : <Navigate to="/login" />;
 };
 
+import axios from 'axios';
+
+// Set Axios Base URL
+axios.defaults.baseURL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+axios.defaults.withCredentials = true; // Important for CORS/Cookies if needed
+
 function App() {
   return (
     <Router>

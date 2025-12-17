@@ -16,8 +16,10 @@ const server = http.createServer(app);
 // Socket.io Setup
 const io = socketIO(server, {
   cors: {
-    origin: process.env.NODE_ENV === 'production' ? false : ['http://localhost:3000'],
-    credentials: true
+    cors: {
+      origin: process.env.CLIENT_URL || '*', // Allow configured client or all (be careful in prod)
+      credentials: true
+    }
   }
 });
 
@@ -43,6 +45,10 @@ mongoose.connect(process.env.MONGO_URI)
   .catch(err => console.error('MongoDB Connection Error:', err));
 
 // Routes
+app.get('/', (req, res) => {
+  res.send('Groot Server is Running 🚀');
+});
+
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/users', require('./routes/users'));
 app.use('/api/groups', require('./routes/groups'));
