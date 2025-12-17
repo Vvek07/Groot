@@ -26,7 +26,10 @@ const socketHandler = new SocketHandler(io);
 socketHandler.init();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: process.env.CLIENT_URL || '*', // Must match the client URL exactly for allow credentials
+  credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
